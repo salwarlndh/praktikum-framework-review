@@ -2,7 +2,12 @@
     {% block title %} Homepage {% endblock %}
     
     {% block content %}
+    {% load static %}
     <div class="hero bg-light p-5 rounded-lg m-3">
         <h1 class="display-4">Selamat Datang di Halaman Depan AIS</h1>
+    </div>
+
+    <div class="row justify-content-center">
+        <img src = "{% static 'images/cuking.jpeg' %}" >
     </div>
     {% endblock %}x
