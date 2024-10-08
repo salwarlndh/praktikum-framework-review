@@ -23,7 +23,7 @@
 <!-- Phone Number Field -->
 <div class="mb-3">
     <label for="id_phone_number" class="form-label">No HP</label>
-    <input type="text" class="form-control" id="id_phone_number" name="phone_number"value="{{ form.phone_number.value|default_if_none:'' }}" required>
+    <input type="text" class="form-control" id="id_phone_number" name="phone_number" value="{{ form.phone_number.value|default_if_none:'' }}" required>
     <div class="invalid-feedback">{{ form.phone_number.errors }}</div>
 </div>
 
@@ -39,8 +39,7 @@
     <label for="id_teacher" class="form-label">Dosen Pembimbing</label>
     <select class="form-select" id="id_teacher" name="teacher" required>
         {% for teacher in form.teacher.field.queryset %}
-        <option value="{{ teacher.id }}" {% if teacher.id == form.teacher.value %} selected {% endif %}> {{ teacher.name }} - {{ teacher.nip }}
-        </option>
+        <option value="{{ teacher.id }}" {% if teacher.id == form.teacher.value %} selected {% endif %}> {{ teacher.name }} - {{ teacher.nip }}</option>
         {% endfor %}
     </select>
     <div class="invalid-feedback">{{ form.teacher.errors }}</div>

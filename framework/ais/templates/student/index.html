@@ -1,9 +1,15 @@
 {% extends 'homepage/layout.html' %}
-{% block title %} Daftar Mahasiswa 
-{% endblock %} {% block content %}
+{% block title %} Daftar Mahasiswa
+{% endblock %} 
+
+{% block content %}
   <div class="container">
     <h1>Daftar Mahasiswa</h1>
-    <a href="{% url 'student_create' %}" class="btn btn-primary mb-3">Tambah Mahasiswa</a>
+    <a href="{% url 'student_create' %}" class="btn btn-primary mb-3">Add Mahasiswa</a>
+    <form method="GET" action="{% url 'student_index' %}" class="d-flex mb-3">
+    <input class="form-control me-2" type="search" name="q" placeholder="Cari mahasiswa..." value="{{ query|default:'' }}" aria-label="Search">
+    <button class="btn btn-outline-success" type="submit">Cari</button>
+    </form>
     <table class="table">
       <thead>
         <tr>
@@ -13,6 +19,7 @@
           <th>No. HP</th>
           <th>Tahun Angkatan</th>
           <th>Dosen Pembimbing</th>
+          <th>Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -24,6 +31,11 @@
             <td>{{ student.phone_number }}</td>
             <td>{{ student.year }}</td>
             <td>{{ student.teacher.name }}</td>
+            <td>
+              <a href="{% url 'student_update' student.id %}" class="btn btn-sm btn-warning">Update</a>
+
+              <button class="btn btn-sm btn-danger" onclick="confirmDelete({{ student.id }})">Delete</button>
+            </td>
           </tr>
         {% empty %}
           <tr>
@@ -33,4 +45,47 @@
       </tbody>
     </table>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    function confirmDelete(studentId) {
+      Swal.fire({
+        title: 'Data mahasiswa akan dihapus',
+        text: 'Data tidak akan bisa dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Hapus!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Ini AJAX
+          fetch(`/student/delete/${studentId}`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': '{{ csrf_token|escapejs }}' // Pastikan token di-escape dengan benar
+            }
+          }).then(response => {
+            if (response.ok) {
+              Swal.fire(
+                'Deleted!',
+                'Student has been deleted.',
+                'success'
+              ).then(() => {
+                // Reload the page after success
+                window.location.reload();
+              });
+            } else {
+              Swal.fire(
+                'Error!',
+                'There was an issue deleting the student.',
+                'error'
+              );
+            }
+          });
+        }
+      });
+    }
+  </script>
 {% endblock %}
